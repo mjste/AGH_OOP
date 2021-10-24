@@ -4,13 +4,13 @@ public class Vector2d {
     final public int x;
     final public int y;
 
-    Vector2d(int x, int y){
+    public Vector2d(int x, int y){
         this.x = x;
         this.y = y;
     }
 
     public String toString(){
-        return "("+String.valueOf(this.x) +","+ String.valueOf(this.y)+")";
+        return "("+this.x +","+this.y+")";
     }
 
     public boolean precedes(Vector2d other){
