@@ -1,10 +1,10 @@
 package agh.ics.oop;
 
+
 public class World {
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         Animal ani = new Animal();
         System.out.println(ani.toString());
-
 
         MoveDirection[] mDirs = OptionParser.parse(new String[]{"r", "f", "f", "f"});
 
