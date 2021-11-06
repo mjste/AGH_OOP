@@ -3,18 +3,46 @@ package agh.ics.oop;
 public class Animal {
     private MapDirection mapDir;
     private Vector2d position;
+    private IWorldMap map;
 
-    public Animal(){
+//    public Animal(){
+//        mapDir = MapDirection.NORTH;
+//        position = new Vector2d(2, 2);
+//    }
+
+    public Animal(IWorldMap map){
         mapDir = MapDirection.NORTH;
         position = new Vector2d(2, 2);
+        this.map = map;
+    }
+
+    public Animal(IWorldMap map, Vector2d initialPosition){
+        mapDir = MapDirection.NORTH;
+        position = initialPosition;
+        this.map = map;
     }
 
     public String toString(){
-        return position.toString()+" "+mapDir.toString();
+        switch (mapDir){
+            case NORTH:
+                return "N";
+            case SOUTH:
+                return "S";
+            case WEST:
+                return "W";
+            case EAST:
+                return "E";
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 
     public boolean isAt(Vector2d position){
         return this.position.equals(position);
+    }
+
+    public Vector2d getPosition(){
+        return position;
     }
 
     public void move(MoveDirection direction){
@@ -28,13 +56,13 @@ public class Animal {
                 break;
             case FORWARD:
                 newPosition = position.add(mapDir.toUnitVector(mapDir));
-                if (newPosition.follows(new Vector2d(0,0)) && newPosition.precedes(new Vector2d(4, 4))) {
+                if (map.canMoveTo(newPosition)){
                     this.position = newPosition;
                 }
                 break;
             case BACKWARD:
                 newPosition = position.add(mapDir.toUnitVector(mapDir).opposite());
-                if (newPosition.follows(new Vector2d(0,0)) && newPosition.precedes(new Vector2d(4, 4))) {
+                if (map.canMoveTo(newPosition)){
                     this.position = newPosition;
                 }
                 break;
