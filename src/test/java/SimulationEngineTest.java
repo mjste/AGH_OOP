@@ -12,5 +12,4 @@ public class SimulationEngineTest {
         IEngine engine = new SimulationEngine(directions, map, positions);
         engine.run();
     }
-
 }
