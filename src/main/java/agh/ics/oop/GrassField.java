@@ -6,12 +6,8 @@ import java.util.Random;
 
 import static java.lang.Math.sqrt;
 
-public class GrassField implements IWorldMap{
-    List<Grass> grassList;
-    List<Animal> animalList;
-    Vector2d v0;
-    Vector2d v1;
-    MapVisualizer mapVisualizer;
+public class GrassField extends AbstractWorldMap{
+    private List<Grass> grassList;
 
     public GrassField(int n) {
         grassList = new ArrayList<>();
@@ -32,13 +28,9 @@ public class GrassField implements IWorldMap{
         }
     }
 
-    public String toString() {
-        return mapVisualizer.draw(v0, v1);
-    }
-
     @Override
     public boolean canMoveTo(Vector2d position) {
-        if (!(objectAt(position) instanceof Animal)) {
+        if (super.canMoveTo(position)) {
             Vector2d ll = position.lowerLeft(v0);
             Vector2d ur = position.upperRight(v1);
             if (ll.precedes(v0)) v0 = ll;
@@ -49,25 +41,9 @@ public class GrassField implements IWorldMap{
     }
 
     @Override
-    public boolean place(Animal animal) {
-        Vector2d pos = animal.getPosition();
-        if (canMoveTo(pos)) {
-            animalList.add(animal);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isOccupied(Vector2d position) {
-        return objectAt(position) != null;
-    }
-
-    @Override
     public Object objectAt(Vector2d position) {
-        for (Animal animal: animalList)
-            if (animal.getPosition().equals(position))
-                return animal;
+        Object object = super.objectAt(position);
+        if (object != null) return object;
         for (Grass grass : grassList)
             if (grass.getPosition().equals(position))
                 return grass;
