@@ -1,9 +1,9 @@
 package agh.ics.oop;
 
-import java.util.List;
+import java.util.Map;
 
 public class AbstractWorldMap implements  IWorldMap{
-    protected List<Animal> animalList;
+    protected Map<Vector2d, Animal> animalMap;
     protected Vector2d v0;
     protected Vector2d v1;
     protected MapVisualizer mapVisualizer;
@@ -20,7 +20,7 @@ public class AbstractWorldMap implements  IWorldMap{
     @Override
     public boolean place(Animal animal) {
         if (canMoveTo(animal.getPosition())) {
-            animalList.add(animal);
+            animalMap.put(animal.getPosition(), animal);
             return true;
         }
         return false;
@@ -33,15 +33,6 @@ public class AbstractWorldMap implements  IWorldMap{
 
     @Override
     public Object objectAt(Vector2d position) {
-        for (Animal animal : animalList)
-        {
-            if (animal.getPosition().equals(position)){
-                return animal;
-            }
-        }
-        return null;
+        return animalMap.get(position);
     }
 }
-
-//skończyłem pisać testy na grassfield i rectangularfield
-// teraz zabieram sie do implementacji AbstractWorldMap

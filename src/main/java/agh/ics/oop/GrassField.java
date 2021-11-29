@@ -1,18 +1,16 @@
 package agh.ics.oop;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.Random;
+import java.util.*;
 
 import static java.lang.Math.sqrt;
 
 public class GrassField extends AbstractWorldMap{
-    private List<Grass> grassList;
+    private Map<Vector2d, Grass> grassMap;
 
     public GrassField(int n) {
-        grassList = new ArrayList<>();
-        animalList = new ArrayList<>();
+
+        grassMap = new HashMap<>();
+        animalMap = new LinkedHashMap<>();
         mapVisualizer = new MapVisualizer(this);
         int top = (int)sqrt(10*n);
         v0 = new Vector2d(0,0);
@@ -23,7 +21,7 @@ public class GrassField extends AbstractWorldMap{
             int y = rand.nextInt(top);
             Vector2d tempVector = new Vector2d(x, y);
             if (!isOccupied(tempVector)) {
-                grassList.add(new Grass(tempVector));
+                grassMap.put(tempVector, new Grass(tempVector));
                 n -= 1;
             }
         }
@@ -47,9 +45,6 @@ public class GrassField extends AbstractWorldMap{
     public Object objectAt(Vector2d position) {
         Object object = super.objectAt(position);
         if (object != null) return object;
-        for (Grass grass : grassList)
-            if (grass.getPosition().equals(position))
-                return grass;
-        return null;
+        return grassMap.get(position);
     }
 }
