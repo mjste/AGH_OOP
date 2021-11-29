@@ -41,7 +41,8 @@ public class Vector2d {
         return new Vector2d(this.x-other.x, this.y-other.y);
     }
 
-    public boolean equals(Vector2d other){
+    @Override
+    public boolean equals(Object other){
         if (this == other){
             return true;
         }
