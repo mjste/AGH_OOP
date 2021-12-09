@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Animal {
+public class Animal implements IMapElement {
     private MapDirection mapDir;
     private Vector2d position;
     private IWorldMap map;
@@ -44,8 +44,25 @@ public class Animal {
         return this.position.equals(position);
     }
 
+    @Override
     public Vector2d getPosition() {
         return position;
+    }
+
+    @Override
+    public String imagePath() {
+        switch (this.mapDir) {
+            case NORTH:
+                return "src/main/resources/up.png";
+            case WEST:
+                return "src/main/resources/left.png";
+            case EAST:
+                return "src/main/resources/right.png";
+            case SOUTH:
+                return "src/main/resources/down.png";
+            default:
+                throw new IllegalStateException();
+        }
     }
 
     public void move(MoveDirection direction) {

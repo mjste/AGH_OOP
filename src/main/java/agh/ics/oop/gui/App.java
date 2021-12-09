@@ -15,18 +15,21 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class App extends Application {
-    AbstractWorldMap map;
+    IWorldMap map;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         GridPane grid = new GridPane();
         Vector2d v0 = map.getBoundaries()[0];
         Vector2d v1 = map.getBoundaries()[1];
-        int cellWidth = 20;
-        int cellHeight = 20;
+        int cellSize = 30;
+        int cellWidth = cellSize;
+        int cellHeight = cellSize;
 
-        grid.add(new Label("y/x"), 0, 0, 1, 1);
+        Label originLabel = new Label("y/x");
+        grid.add(originLabel, 0, 0, 1, 1);
+        GridPane.setHalignment(originLabel, HPos.CENTER);
+        GridPane.setValignment(originLabel, VPos.CENTER);
 
         grid.getColumnConstraints().add(new ColumnConstraints(cellWidth));
         grid.getRowConstraints().add(new RowConstraints(cellHeight));
@@ -36,12 +39,18 @@ public class App extends Application {
             Label label = new Label(Integer.toString(x));
             grid.add(label, i, 0, 1, 1);
             grid.getColumnConstraints().add(new ColumnConstraints(cellWidth));
+            GridPane.setHalignment(label, HPos.CENTER);
+            GridPane.setValignment(label, VPos.CENTER);
         }
         for (int y = v0.y; y <= v1.y; y++) {
-            int j = y-v0.y+1;
+//            int j = y-v0.y+1;
+            int j = v1.y-y+1;
+//            int y = v1.y-j+1;
             Label label = new Label(Integer.toString(y));
             grid.add(label, 0, j, 1, 1);
             grid.getRowConstraints().add(new RowConstraints(cellHeight));
+            GridPane.setHalignment(label, HPos.CENTER);
+            GridPane.setValignment(label, VPos.CENTER);
         }
 
 //        for (int x = v0.x; x <= v1.x; x++) {
@@ -52,23 +61,27 @@ public class App extends Application {
 //                grid.add(label, i, j, 1, 1);
 //            }
 //        }
-//
-//        for (int i = v0.x; i <= v1.x; i++) {
-//            for (int j = v0.y; j <= v1.y; j++) {
-//
-//            }
-//        }
+
+        for (int i = v0.x; i <= v1.x; i++) {
+            for (int j = v0.y; j <= v1.y; j++) {
+                int x = i-v0.x+1;
+                int y = v1.y-j+1;
+                String str;
+                if (map.objectAt(new Vector2d(i, j)) != null) {
+                    str = map.objectAt(new Vector2d(i, j)).toString();
+                } else {
+                    str = "";
+                }
+                Label label = new Label(str);
+                grid.add(label, x, y, 1, 1);
+                GridPane.setHalignment(label, HPos.CENTER);
+                GridPane.setValignment(label, VPos.CENTER);
+            }
+        }
 
 
         grid.setGridLinesVisible(true);
-
-
-
-        GridPane.setHalignment(grid, HPos.CENTER);
-        GridPane.setValignment(grid, VPos.CENTER);
-
         Scene scene = new Scene(grid, 400, 400);
-
 
         primaryStage.setScene(scene);
         primaryStage.show();
