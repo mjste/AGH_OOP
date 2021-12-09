@@ -5,7 +5,8 @@ import java.util.*;
 import static java.lang.Math.sqrt;
 
 public class GrassField extends AbstractWorldMap{
-    private Map<Vector2d, Grass> grassMap;
+    private MapBoundary mapBoundary = new MapBoundary(this);
+    private final Map<Vector2d, Grass> grassMap;
 
     public GrassField(int n) {
 
@@ -22,13 +23,14 @@ public class GrassField extends AbstractWorldMap{
             Vector2d tempVector = new Vector2d(x, y);
             if (!isOccupied(tempVector)) {
                 grassMap.put(tempVector, new Grass(tempVector));
+                positionChanged(tempVector, tempVector);
                 n -= 1;
             }
         }
     }
 
-    @Override
 
+    @Override
     public boolean canMoveTo(Vector2d position) {
         return super.canMoveTo(position);
     }
@@ -41,18 +43,19 @@ public class GrassField extends AbstractWorldMap{
     }
 
     protected Vector2d[] getBoundaries() {
-        Vector2d first = (Vector2d) animalMap.keySet().toArray()[0];
-        Vector2d second = (Vector2d) animalMap.keySet().toArray()[0];
+        return new Vector2d[]{mapBoundary.lowerLeft(), mapBoundary.upperRight()};
+    }
 
-        for (Vector2d position : animalMap.keySet()) {
-            first = first.lowerLeft(position);
-            second = second.upperRight(position);
-        }
+    @Override
+    public boolean place(Animal animal) {
+        super.place(animal);
+        positionChanged(animal.getPosition(), animal.getPosition());
+        return true;
+    }
 
-        for (Vector2d position : grassMap.keySet()) {
-            first = first.lowerLeft(position);
-            second = second.upperRight(position);
-        }
-        return new Vector2d[]{first, second};
+    @Override
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        super.positionChanged(oldPosition, newPosition);
+        mapBoundary.positionChanged(oldPosition, newPosition);
     }
 }
