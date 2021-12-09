@@ -24,7 +24,7 @@ public class OptionsParser {
                     movDir[i] = MoveDirection.RIGHT;
                     break;
                 default:
-                    throw new IllegalArgumentException();
+                    throw new IllegalArgumentException(args[i]+" is not legal move specification");
             }
         }
         return movDir;
