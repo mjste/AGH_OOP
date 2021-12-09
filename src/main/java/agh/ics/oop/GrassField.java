@@ -42,7 +42,7 @@ public class GrassField extends AbstractWorldMap{
         return grassMap.get(position);
     }
 
-    protected Vector2d[] getBoundaries() {
+    public Vector2d[] getBoundaries() {
         return new Vector2d[]{mapBoundary.lowerLeft(), mapBoundary.upperRight()};
     }
 

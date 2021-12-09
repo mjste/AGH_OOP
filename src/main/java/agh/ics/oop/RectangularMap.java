@@ -17,7 +17,7 @@ public class RectangularMap extends AbstractWorldMap{
         return position.follows(v0) && position.precedes(v1) && super.canMoveTo(position);
     }
 
-    protected Vector2d[] getBoundaries() {
+    public Vector2d[] getBoundaries() {
         return new Vector2d[]{v0,v1};
     }
 }
