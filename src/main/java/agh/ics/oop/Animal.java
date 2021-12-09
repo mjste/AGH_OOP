@@ -28,13 +28,13 @@ public class Animal {
     public String toString() {
         switch (mapDir) {
             case NORTH:
-                return "N";
+                return "^";
             case SOUTH:
-                return "S";
+                return "v";
             case WEST:
-                return "W";
+                return "<";
             case EAST:
-                return "E";
+                return ">";
             default:
                 throw new IllegalStateException("Unexpected value: " + mapDir);
         }

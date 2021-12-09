@@ -1,15 +1,18 @@
 package agh.ics.oop;
 
 import java.util.Map;
+import java.util.Vector;
 
-public class AbstractWorldMap implements  IWorldMap, IPositionChangeObserver{
+public abstract class AbstractWorldMap implements  IWorldMap, IPositionChangeObserver{
     protected Map<Vector2d, Animal> animalMap;
-    protected Vector2d v0;
-    protected Vector2d v1;
+//    protected Vector2d v0;
+//    protected Vector2d v1;
     protected MapVisualizer mapVisualizer;
 
     public String toString() {
-        return mapVisualizer.draw(v0, v1);
+        Vector2d[] boundaries = getBoundaries();
+
+        return mapVisualizer.draw(boundaries[0], boundaries[1]);
     }
 
     @Override
@@ -42,4 +45,6 @@ public class AbstractWorldMap implements  IWorldMap, IPositionChangeObserver{
         animalMap.remove(oldPosition);
         animalMap.put(newPosition, ani);
     }
+
+    protected abstract Vector2d[] getBoundaries();
 }
