@@ -104,4 +104,8 @@ public class Animal implements IMapElement {
             obs.positionChanged(oldPos, newPos);
         }
     }
+
+    public List<IPositionChangeObserver> getObserverList() {
+        return observerList;
+    }
 }
