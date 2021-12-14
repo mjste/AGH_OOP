@@ -25,9 +25,7 @@ public class GuiElementBox {
             imageView.setFitHeight(20);
             Label label = new Label(element.getPosition().toString());
 
-            vBox = new VBox();
-            vBox.getChildren().add(imageView);
-            vBox.getChildren().add(label);
+            vBox = new VBox(imageView, label);
             vBox.setAlignment(Pos.CENTER);
         } catch (FileNotFoundException ex) {
             System.out.println("file not found :( ");

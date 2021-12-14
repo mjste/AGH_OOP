@@ -1,50 +1,75 @@
 package agh.ics.oop.gui;
 
 import agh.ics.oop.*;
+import agh.ics.oop.enums.MoveDirection;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class App extends Application implements IPositionChangeObserver {
     private IWorldMap map;
-
-//    GridPane grid;
+    private GridPane grid;
+    private SimulationEngine engine;
+    private Thread engineThread;
+    private TextField textField;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+//        engineThread = new Thread(engine);
+//        engineThread.start();
+
         primaryStage.setTitle("Simulation");
 
-        System.out.println("in start "+Thread.currentThread().getName());
-        GridPane layoutGrid = new GridPane();
-        GridPane grid = new GridPane();
+        HBox hBox = new HBox();
+        VBox vBox = new VBox(7);
+        vBox.setMinWidth(200);
 
-        layoutGrid.add(grid, 1, 0, 1, 1);
-        VBox vBox = new VBox();
+        textField = new TextField("f b r l f f r r f f f f f f f f f");
+        Button submitButton = new Button("Submit");
+        HBox textInputHBox = new HBox(5,textField, submitButton);
+        Button startButton = new Button("Start");
 
-        layoutGrid.getColumnConstraints().add(new ColumnConstraints(300));
-        layoutGrid.getColumnConstraints().add(new ColumnConstraints(500));
-        Button startButton = new Button();
-        startButton.setText("Start Button");
+        textField.setMaxWidth(100);
+
+        vBox.setAlignment(Pos.CENTER);
+        textInputHBox.setAlignment(Pos.CENTER);
+        vBox.getChildren().add(textInputHBox);
         vBox.getChildren().add(startButton);
 
-        layoutGrid.add(vBox, 0, 0, 1, 1);
+        startButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                startEngine();
+            }
+        });
 
-        int cellSize = 40;
-        int cellWidth = cellSize;
-        int cellHeight = cellSize;
+        submitButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                submitActions();
+            }
+        });
 
-        refreshGrid(grid, cellWidth, cellHeight);
+        grid = new GridPane();
 
-        Scene scene = new Scene(layoutGrid, 800, 600);
+        hBox.getChildren().add(vBox);
+        hBox.getChildren().add(grid);
+
+
+        Scene scene = new Scene(hBox, 800, 600);
+        refreshGrid();
+
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -52,27 +77,51 @@ public class App extends Application implements IPositionChangeObserver {
 
     @Override
     public void init() {
-        System.out.println("inside app.init"+Thread.currentThread().getName());
         try {
             String[] args = getParameters().getRaw().toArray(new String[0]);
             MoveDirection[] directions = new OptionsParser().parse(args);
             map = new GrassField(10);
             Vector2d[] positions = { new Vector2d(2, 2), new Vector2d(3,4)};
-            SimulationEngine engine = new SimulationEngine(directions, map, positions);
-            Thread engineThread = new Thread(engine);
-            engineThread.start();
+            System.out.println("test");
+            engine = new SimulationEngine(directions, map, positions);
+            engine.addObserver(this);
         } catch (IllegalArgumentException ex) {
             System.out.println("App.init() failed: "+ex.getMessage());
         }
-
     }
 
-    private void refreshGrid(GridPane grid, int cellWidth, int cellHeight) {
+    private void startEngine() {
+        if (engineThread == null) {
+            engineThread = new Thread(engine);
+            engineThread.start();
+        } else {
+            if (!engineThread.isAlive()) {
+                engineThread = new Thread(engine);
+                engineThread.start();
+            }
+        }
+    }
+
+    private void submitActions() {
+        String text = textField.getText();
+        if (text != null) {
+            MoveDirection[] moveDirections = new OptionsParser().parse(text.split(" "));
+            engine.setMoveDirections(moveDirections);
+        }
+    }
+
+    private void refreshGrid() {
+        int cellSize = 40;
+        int cellWidth = cellSize;
+        int cellHeight = cellSize;
         Vector2d v0 = map.getBoundaries()[0];
         Vector2d v1 = map.getBoundaries()[1];
         grid.getChildren().clear();
+        grid.getColumnConstraints().clear();
+        grid.getRowConstraints().clear();
         makeGridCoordinates(grid, cellWidth, cellHeight, v0, v1);
         addWorldElements(grid, v0, v1);
+        grid.setGridLinesVisible(false);
         grid.setGridLinesVisible(true);
     }
 
@@ -109,7 +158,7 @@ public class App extends Application implements IPositionChangeObserver {
                 Object obj = map.objectAt(new Vector2d(i, j));
                 if (obj != null) {
                     VBox vbox = new GuiElementBox((IMapElement) obj).getVBox();
-                    grid.add(vbox, x, y, 1, 1);
+                    grid.add(vbox, x, y);
                     GridPane.setHalignment(vbox, HPos.CENTER);
                     GridPane.setValignment(vbox, VPos.CENTER);
                 }
@@ -119,6 +168,8 @@ public class App extends Application implements IPositionChangeObserver {
 
     @Override
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
-
+        Platform.runLater(() -> {if (grid != null)
+            refreshGrid();
+            System.out.println(grid.isGridLinesVisible());});
     }
 }

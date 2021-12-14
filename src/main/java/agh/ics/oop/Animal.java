@@ -1,7 +1,8 @@
 package agh.ics.oop;
 
-import java.io.IOError;
-import java.util.ArrayList;
+import agh.ics.oop.enums.MapDirection;
+import agh.ics.oop.enums.MoveDirection;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -70,6 +71,7 @@ public class Animal implements IMapElement {
         switch (direction) {
             case LEFT:
                 mapDir = mapDir.previous(mapDir);
+                positionChanged(position, position);
                 break;
             case BACKWARD:
                 newPosition = position.add(mapDir.toUnitVector(mapDir).opposite());
@@ -80,6 +82,7 @@ public class Animal implements IMapElement {
                 break;
             case RIGHT:
                 mapDir = mapDir.next(mapDir);
+                positionChanged(position, position);
                 break;
             case FORWARD:
                 newPosition = position.add(mapDir.toUnitVector(mapDir));
