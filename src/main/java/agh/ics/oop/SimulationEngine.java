@@ -1,14 +1,17 @@
 package agh.ics.oop;
+import agh.ics.oop.enums.MoveDirection;
+import agh.ics.oop.gui.App;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class SimulationEngine implements IEngine, Runnable{
-    private final List<MoveDirection> moveDirections;
+    private List<MoveDirection> moveDirections;
     private final List<Vector2d> positions;
     private final IWorldMap map;
     private List<Animal> animalList;
-    int moveDelay = 10;
+    int moveDelay = 300;
 
     public SimulationEngine(MoveDirection[] moveDirections, IWorldMap iWorldMap, Vector2d[] positions){
         this.moveDirections = Arrays.asList(moveDirections);
@@ -24,6 +27,20 @@ public class SimulationEngine implements IEngine, Runnable{
         }
     }
 
+    public void addObserver(IPositionChangeObserver observer) {
+        for (Animal animal : animalList) {
+            animal.getObserverList().add(observer);
+        }
+    }
+
+    public void setDelay(int delay) {
+        this.moveDelay = delay;
+    }
+
+    public void setMoveDirections(MoveDirection[] moveDirections) {
+        this.moveDirections = Arrays.asList(moveDirections);
+    }
+
     @Override
     public void run() {
         int n = moveDirections.size();
@@ -31,7 +48,6 @@ public class SimulationEngine implements IEngine, Runnable{
 
         // System.out.println(map.toString());
         for (int i = 0; i < n; i++){
-//            System.out.println(map.toString());
             try {
                 Thread.sleep(moveDelay);
             } catch (Exception e) {
@@ -39,7 +55,6 @@ public class SimulationEngine implements IEngine, Runnable{
             }
             animalList.get(i % m).move(moveDirections.get(i % n));
         }
-
-        System.out.println("engine.run : "+ Thread.currentThread().getName());
+//        System.out.println("engine.run : "+ Thread.currentThread().getName());
     }
 }

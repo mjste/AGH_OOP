@@ -1,4 +1,5 @@
 import agh.ics.oop.*;
+import agh.ics.oop.enums.MoveDirection;
 import org.junit.jupiter.api.Test;
 
 public class SimulationEngineTest {

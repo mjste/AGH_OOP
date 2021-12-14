@@ -1,5 +1,7 @@
 package agh.ics.oop;
 
+import agh.ics.oop.enums.MoveDirection;
+
 public class OptionsParser {
     public MoveDirection[] parse(String[] args){
         int len = args.length;
@@ -24,7 +26,7 @@ public class OptionsParser {
                     movDir[i] = MoveDirection.RIGHT;
                     break;
                 default:
-                    throw new IllegalArgumentException(args[i]+" is not legal move specification");
+                    throw new IllegalArgumentException("\""+args[i]+"\" is not legal move specification");
             }
         }
         return movDir;

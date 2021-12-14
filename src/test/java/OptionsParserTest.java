@@ -1,4 +1,4 @@
-import agh.ics.oop.MoveDirection;
+import agh.ics.oop.enums.MoveDirection;
 import agh.ics.oop.OptionsParser;
 import org.junit.jupiter.api.Test;
 
